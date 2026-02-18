@@ -1,0 +1,455 @@
+"""
+Enhanced API endpoints for AI Review & Approve workflow with improved output.
+"""
+
+from fastapi import APIRouter, HTTPException, BackgroundTasks
+from pydantic import BaseModel
+from typing import List, Optional, Dict, Any
+import asyncio
+import sys
+import os
+
+# Add path to src_clean_architecture
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src', 'core', 'src_clean_architecture'))
+
+try:
+    from application.ai_review_use_case import AIReviewUseCase
+    from domain.change_request import ChangeStatus
+    from infrastructure import (
+        AIOutputFormatter,
+        EnhancedAIProcessor,
+        ChangeExplainer,
+        FormattedOutput
+    )
+    IMPORTS_OK = True
+except ImportError:
+    AIReviewUseCase = None
+    ChangeStatus = None
+    AIOutputFormatter = None
+    EnhancedAIProcessor = None
+    ChangeExplainer = None
+    FormattedOutput = None
+    IMPORTS_OK = False
+
+
+router = APIRouter(prefix="/api/ai-review", tags=["ai-review"])
+
+
+# Enhanced request/response models
+class ChangeRequestCreate(BaseModel):
+    file_id: str
+    sheet_id: str
+    user_prompt: str
+    options: Optional[Dict[str, Any]] = None  # e.g., {"max_suggestions": 5}
+
+
+class SuggestionDetail(BaseModel):
+    suggestion_id: str
+    title: str
+    description: str
+    reasoning: str
+    confidence: str
+    confidence_score: float
+    impact: str
+    affected_cells: int
+    change_types: List[str]
+    requires_confirmation: bool
+    preview_available: bool
+    changes: List[Dict[str, Any]]
+
+
+class ChangeRequestResponse(BaseModel):
+    request_id: str
+    status: str
+    user_prompt: str
+    suggestions: List[SuggestionDetail]
+    summary: str
+    action_items: List[str]
+    formatted_output: Optional[Dict[str, Any]] = None
+    message: str
+
+
+class DetailedPreviewResponse(BaseModel):
+    request_id: str
+    suggestion_id: str
+    title: str
+    description: str
+    markdown_preview: str
+    html_preview: str
+    changes_table: str
+    statistics: Dict[str, Any]
+    warnings: List[str]
+    recommendations: List[str]
+
+
+class ApproveRequest(BaseModel):
+    request_id: str
+    suggestion_id: str
+    note: Optional[str] = None  # Optional user note
+
+
+class ApplyChangesRequest(BaseModel):
+    request_id: str
+    create_backup: bool = True
+
+
+class ApplyChangesResponse(BaseModel):
+    success: bool
+    request_id: str
+    file_id: str
+    sheet_id: str
+    changes_applied: int
+    cells_modified: List[str]
+    formulas_added: int
+    backup_created: Optional[str] = None
+    execution_time_ms: float
+    message: str
+
+
+# Global use case
+ai_review_use_case: Optional[AIReviewUseCase] = None
+ai_formatter = AIOutputFormatter()
+change_explainer = ChangeExplainer()
+
+
+def set_ai_review_use_case(use_case: AIReviewUseCase):
+    """Set the AI review use case."""
+    global ai_review_use_case
+    ai_review_use_case = use_case
+
+
+@router.post("/request", response_model=ChangeRequestResponse)
+async def request_changes(data: ChangeRequestCreate):
+    """
+    Request AI analysis with enhanced output.
+    
+    Returns formatted suggestions with multiple output formats (markdown, HTML, JSON).
+    """
+    if not ai_review_use_case:
+        raise HTTPException(status_code=503, detail="AI review service not available")
+    
+    try:
+        # Execute use case
+        request = await ai_review_use_case.request_changes(
+            file_id=data.file_id,
+            sheet_id=data.sheet_id,
+            user_prompt=data.user_prompt
+        )
+        
+        # Format suggestions with enhanced output
+        formatted_output = ai_formatter.format_suggestion_set(
+            suggestions=request.suggestions,
+            reasoning=request.suggestions[0].reasoning if request.suggestions else "",
+            include_code_blocks=True
+        )
+        
+        # Build detailed response
+        suggestion_details = []
+        for sugg in request.suggestions:
+            detail = SuggestionDetail(
+                suggestion_id=sugg.suggestion_id,
+                title=sugg.description,
+                description=sugg.reasoning,
+                reasoning=sugg.reasoning,
+                confidence=f"{sugg.confidence_score:.0%}",
+                confidence_score=sugg.confidence_score,
+                impact=_calculate_impact(sugg),
+                affected_cells=sugg.affected_cells_count,
+                change_types=list(set(c.change_type.value for c in sugg.changes)),
+                requires_confirmation=sugg.confidence_score < 0.8,
+                preview_available=True,
+                changes=[
+                    {
+                        'cell_id': c.cell_id,
+                        'old_value': str(c.old_value)[:100] if c.old_value else None,
+                        'new_value': str(c.new_value)[:100] if c.new_value else None,
+                        'is_formula': c.is_formula_change,
+                        'change_type': c.change_type.value,
+                        'description': c.description
+                    }
+                    for c in sugg.changes
+                ]
+            )
+            suggestion_details.append(detail)
+        
+        return ChangeRequestResponse(
+            request_id=request.request_id,
+            status=request.status.value,
+            user_prompt=request.user_prompt,
+            suggestions=suggestion_details,
+            summary=formatted_output.summary,
+            action_items=formatted_output.action_items,
+            formatted_output={
+                'markdown': formatted_output.markdown,
+                'html': formatted_output.html,
+                'json': formatted_output.json_data
+            },
+            message="AI analysis complete. Please review the suggestions below."
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.post("/preview", response_model=DetailedPreviewResponse)
+async def preview_changes_detailed(data: Dict[str, str]):
+    """
+    Get detailed preview with formatted output.
+    
+    Returns markdown, HTML, and tabular previews of changes.
+    """
+    if not ai_review_use_case:
+        raise HTTPException(status_code=503, detail="Service not available")
+    
+    try:
+        # Get preview data
+        preview = ai_review_use_case.preview_changes(
+            request_id=data['request_id'],
+            suggestion_id=data.get('suggestion_id')
+        )
+        
+        # Get the suggestion for detailed formatting
+        request = ai_review_use_case.change_repository.get(data['request_id'])
+        suggestion = None
+        if request:
+            for s in request.suggestions:
+                if s.suggestion_id == data.get('suggestion_id') or s.suggestion_id == request.selected_suggestion_id:
+                    suggestion = s
+                    break
+        
+        if not suggestion:
+            raise HTTPException(status_code=404, detail="Suggestion not found")
+        
+        # Generate formatted previews
+        formatted = ai_formatter.format_suggestion_set([suggestion], suggestion.reasoning)
+        
+        # Generate comparison table
+        changes_table = ai_formatter.format_comparison_table(suggestion.changes)
+        
+        # Generate warnings and recommendations
+        warnings = []
+        recommendations = []
+        
+        if suggestion.confidence_score < 0.5:
+            warnings.append("Low confidence suggestion - review carefully")
+        
+        if any(c.is_formula_change for c in suggestion.changes):
+            warnings.append("Formula changes detected - may affect dependent cells")
+            recommendations.append("Test formulas in a backup copy first")
+        
+        if suggestion.affected_cells_count > 50:
+            warnings.append(f"Large number of changes ({suggestion.affected_cells_count} cells)")
+            recommendations.append("Consider breaking into smaller batches")
+        
+        # Generate explanation
+        explanation = change_explainer.explain_suggestion(suggestion)
+        
+        return DetailedPreviewResponse(
+            request_id=data['request_id'],
+            suggestion_id=suggestion.suggestion_id,
+            title=suggestion.description,
+            description=suggestion.reasoning,
+            markdown_preview=formatted.markdown + "\n\n" + explanation,
+            html_preview=formatted.html,
+            changes_table=changes_table,
+            statistics=formatted.json_data.get('analysis', {}).get('statistics', {}),
+            warnings=warnings,
+            recommendations=recommendations
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/explain")
+async def explain_suggestion(data: Dict[str, str]):
+    """
+    Get detailed natural language explanation of a suggestion.
+    """
+    if not ai_review_use_case:
+        raise HTTPException(status_code=503, detail="Service not available")
+    
+    try:
+        request = ai_review_use_case.change_repository.get(data['request_id'])
+        if not request:
+            raise HTTPException(status_code=404, detail="Request not found")
+        
+        # Find suggestion
+        suggestion = None
+        for s in request.suggestions:
+            if s.suggestion_id == data.get('suggestion_id'):
+                suggestion = s
+                break
+        
+        if not suggestion:
+            raise HTTPException(status_code=404, detail="Suggestion not found")
+        
+        # Generate explanation
+        explanation = change_explainer.explain_suggestion(suggestion)
+        
+        # Generate individual change explanations
+        change_explanations = [
+            change_explainer.explain_change_detailed(c)
+            for c in suggestion.changes
+        ]
+        
+        return {
+            'request_id': data['request_id'],
+            'suggestion_id': suggestion.suggestion_id,
+            'explanation': explanation,
+            'change_explanations': change_explanations,
+            'safety_notes': _generate_safety_notes(suggestion)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/apply", response_model=ApplyChangesResponse)
+async def apply_changes_enhanced(data: ApplyChangesRequest):
+    """
+    Apply approved changes with detailed tracking.
+    """
+    if not ai_review_use_case:
+        raise HTTPException(status_code=503, detail="Service not available")
+    
+    import time
+    start_time = time.time()
+    
+    try:
+        # Create backup if requested
+        backup_path = None
+        if data.create_backup:
+            # This would integrate with your backup system
+            backup_path = f"backup_{data.request_id}.xlsx"
+        
+        # Apply changes
+        result = await ai_review_use_case.apply_approved_changes(
+            request_id=data.request_id
+        )
+        
+        execution_time = (time.time() - start_time) * 1000
+        
+        # Get detailed stats
+        request = ai_review_use_case.change_repository.get(data['request_id'])
+        suggestion = request.get_selected_suggestion() if request else None
+        
+        cells_modified = []
+        formulas_added = 0
+        
+        if suggestion:
+            cells_modified = [c.cell_id for c in suggestion.changes]
+            formulas_added = sum(1 for c in suggestion.changes if c.is_formula_change)
+        
+        return ApplyChangesResponse(
+            success=True,
+            request_id=data.request_id,
+            file_id=result['file_id'],
+            sheet_id=result['sheet_id'],
+            changes_applied=result['changes_applied'],
+            cells_modified=cells_modified,
+            formulas_added=formulas_added,
+            backup_created=backup_path,
+            execution_time_ms=round(execution_time, 2),
+            message=f"Successfully applied {result['changes_applied']} changes"
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to apply changes: {str(e)}")
+
+
+@router.post("/export")
+async def export_suggestions(data: Dict[str, str]):
+    """
+    Export suggestions to various formats (Excel, JSON, etc.).
+    """
+    if not ai_review_use_case:
+        raise HTTPException(status_code=503, detail="Service not available")
+    
+    try:
+        request = ai_review_use_case.change_repository.get(data['request_id'])
+        if not request:
+            raise HTTPException(status_code=404, detail="Request not found")
+        
+        format_type = data.get('format', 'json')
+        
+        if format_type == 'json':
+            formatted = ai_formatter.format_suggestion_set(
+                request.suggestions,
+                ""
+            )
+            return {
+                'format': 'json',
+                'data': formatted.json_data
+            }
+        
+        elif format_type == 'excel':
+            # Would generate and return Excel file
+            return {
+                'format': 'excel',
+                'message': 'Excel export functionality - integrate with file download'
+            }
+        
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported format: {format_type}")
+            
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/stream/{request_id}")
+async def stream_analysis(request_id: str):
+    """
+    Stream analysis results in real-time (for long-running AI calls).
+    """
+    async def event_generator():
+        """Generate SSE events."""
+        # This would stream partial results as AI generates them
+        yield f"data: {json.dumps({'status': 'processing'})}\n\n"
+        await asyncio.sleep(1)
+        yield f"data: {json.dumps({'status': 'complete'})}\n\n"
+    
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream"
+    )
+
+
+# Helper functions
+def _calculate_impact(suggestion) -> str:
+    """Calculate impact level."""
+    num_changes = len(suggestion.changes)
+    has_formulas = any(c.is_formula_change for c in suggestion.changes)
+    
+    if num_changes > 10 or has_formulas:
+        return "high"
+    elif num_changes > 3:
+        return "medium"
+    else:
+        return "low"
+
+
+def _generate_safety_notes(suggestion) -> List[str]:
+    """Generate safety notes for a suggestion."""
+    notes = []
+    
+    if suggestion.confidence_score < 0.8:
+        notes.append("⚠️ Medium confidence - review before applying")
+    
+    if any(c.is_formula_change for c in suggestion.changes):
+        notes.append("ℹ️ Formulas may affect other cells")
+    
+    if suggestion.affected_cells_count > 20:
+        notes.append("⚠️ Affects many cells - consider previewing first")
+    
+    return notes
+
+
+# Include existing endpoints
+from .ai_review import (
+    approve_suggestion,
+    reject_request,
+    get_request_status,
+    list_pending_requests
+)

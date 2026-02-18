@@ -1,0 +1,396 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply bg-dark-100 text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-lg;
+  }
+  
+  .glass-input {
+    @apply bg-white/5 border border-white/20 rounded-md px-3 py-2 
+           focus:outline-none focus:border-blue-500/50 focus:bg-white/10
+           placeholder-white/30 text-white;
+  }
+  
+  .glass-button {
+    @apply bg-white/10 hover:bg-white/20 border border-white/20 
+           rounded-md px-4 py-2 transition-all duration-200
+           active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .glass-button-primary {
+    @apply bg-blue-600/80 hover:bg-blue-600 border-blue-500/50
+           rounded-md px-4 py-2 transition-all duration-200
+           active:scale-95;
+  }
+  
+  .glass-button-danger {
+    @apply bg-red-600/80 hover:bg-red-600 border-red-500/50
+           rounded-md px-4 py-2 transition-all duration-200
+           active:scale-95;
+  }
+  
+  .glass-select {
+    @apply bg-white/5 border border-white/20 rounded-md px-3 py-2
+           focus:outline-none focus:border-blue-500/50 text-white
+           appearance-none cursor-pointer;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* AG Grid Spreadsheet Styles - Light Theme */
+  .ag-theme-alpine {
+    --ag-background-color: #ffffff;
+    --ag-foreground-color: #212529;
+    --ag-header-background-color: #f0f0f0;
+    --ag-header-foreground-color: #333;
+    --ag-border-color: #d0d0d0;
+    --ag-row-border-color: #e0e0e0;
+    --ag-cell-horizontal-padding: 8px;
+    --ag-cell-vertical-padding: 0;
+    --ag-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --ag-font-size: 13px;
+    --ag-row-height: 24px;
+    --ag-header-height: 28px;
+    --ag-range-selection-border-color: #0066cc;
+    --ag-range-selection-border-style: solid;
+    --ag-range-selection-background-color: rgba(0, 102, 204, 0.1);
+  }
+  
+  .ag-theme-alpine .ag-header-cell {
+    border-right: 1px solid #d0d0d0;
+    border-bottom: 2px solid #d0d0d0;
+    font-weight: 600;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  
+  .ag-theme-alpine .ag-cell {
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    line-height: 24px;
+    padding: 0;
+    cursor: cell !important;
+  }
+
+  .ag-theme-alpine .ag-row {
+    cursor: cell !important;
+  }
+  
+  /* Cell Focus State */
+  .ag-theme-alpine .ag-cell-focus {
+    border: 2px solid #0066cc !important;
+    outline: none;
+    z-index: 1;
+    position: relative;
+  }
+  
+  /* Range Selection Styling */
+  .ag-theme-alpine .ag-cell-range-selected-1:not(.ag-cell-focus) {
+    background-color: rgba(0, 102, 204, 0.1) !important;
+  }
+  
+  .ag-theme-alpine .ag-cell-range-selected-2:not(.ag-cell-focus) {
+    background-color: rgba(0, 102, 204, 0.15) !important;
+  }
+  
+  .ag-theme-alpine .ag-cell-range-selected-3:not(.ag-cell-focus) {
+    background-color: rgba(0, 102, 204, 0.2) !important;
+  }
+  
+  .ag-theme-alpine .ag-cell-range-selected-4:not(.ag-cell-focus) {
+    background-color: rgba(0, 102, 204, 0.25) !important;
+  }
+  
+  /* Row Hover */
+  .ag-theme-alpine .ag-row-hover {
+    background-color: #f5f5f5;
+  }
+  
+  /* Row Selection Highlight */
+  .ag-theme-alpine .ag-row-selected {
+    background-color: rgba(0, 102, 204, 0.05);
+  }
+  
+  /* Cell Selection Styles - MC Excel Like */
+  .ag-theme-alpine .cell-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    cursor: cell !important;
+  }
+  
+  /* Active Cell (where you type) */
+  .ag-theme-alpine .cell-active {
+    background-color: white !important;
+    box-shadow: inset 0 0 0 2px #217346 !important; /* Excel Green */
+    z-index: 10;
+  }
+  
+  /* Range Selection (The light green area) */
+  .ag-theme-alpine .cell-in-range {
+    background-color: rgba(33, 115, 70, 0.1) !important;
+    box-shadow: inset 0 0 0 1px rgba(33, 115, 70, 0.3) !important;
+  }
+  
+  /* Selection Border logic for the whole range */
+  .ag-theme-alpine .cell-selected {
+    background-color: rgba(33, 115, 70, 0.05) !important;
+  }
+  
+  /* Fill handle for active cell */
+  .ag-theme-alpine .fill-handle {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    background-color: #217346;
+    border: 1px solid white;
+    border-radius: 1px;
+    cursor: crosshair;
+    z-index: 20;
+  }
+  
+  .ag-theme-alpine .fill-handle:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Prevent text selection during drag */
+  .ag-theme-alpine .ag-root-wrapper {
+    user-select: none;
+  }
+  
+  /* Row/Column Header Hover */
+  .ag-theme-alpine .row-number-cell:hover,
+  .ag-theme-alpine .spreadsheet-header:hover {
+    background-color: #dadada !important;
+  }
+  
+  /* Active Header Highlight */
+  .ag-theme-alpine .header-active {
+    background-color: #c6c6c6 !important;
+    color: #217346 !important;
+  }
+  
+  /* Fill Handle (Drag to Fill) */
+  .ag-theme-alpine .ag-range-selection-fill-handle {
+    width: 8px;
+    height: 8px;
+    background-color: #0066cc;
+    border: 1px solid white;
+    border-radius: 2px;
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    cursor: crosshair;
+    z-index: 10;
+  }
+  
+  /* Drag Ghost Preview */
+  .ag-drag-ghost {
+    opacity: 0.7;
+    background-color: rgba(0, 102, 204, 0.2) !important;
+    border: 2px dashed #0066cc !important;
+  }
+  
+  /* Active Cell Highlight */
+  .cell-active {
+    box-shadow: 0 0 0 2px #0066cc;
+    z-index: 2;
+  }
+  
+  /* Selection Border Animation */
+  @keyframes selectionPulse {
+    0% { box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.5); }
+    50% { box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.7); }
+    100% { box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.5); }
+  }
+  
+  .cell-selection-active {
+    animation: selectionPulse 1.5s ease-in-out infinite;
+  }
+  
+  /* Formula bar styles */
+  .formula-bar {
+    @apply flex items-center gap-2 px-3 py-1.5 bg-white border-b border-gray-300;
+  }
+  
+  /* Toolbar styles */
+  .toolbar-button {
+    @apply p-1.5 hover:bg-gray-200 rounded transition-colors;
+  }
+  
+  .toolbar-button.active {
+    @apply bg-gray-300;
+  }
+  
+  /* File Tab Styles */
+  .file-tab {
+    @apply flex items-center gap-2 px-3 py-2 text-xs cursor-pointer 
+           border-r border-[#1e1e1e] min-w-[120px] max-w-[200px]
+           transition-colors duration-150;
+  }
+  
+  .file-tab.active {
+    @apply bg-[#1e1e1e] text-white;
+  }
+  
+  .file-tab.inactive {
+    @apply bg-[#2d2d2d] text-[#969696] hover:bg-[#3d3d3d];
+  }
+  
+  /* Context Menu Styles */
+  .context-menu {
+    @apply fixed z-50 bg-white border border-gray-200 rounded-lg shadow-xl py-1 min-w-[180px];
+  }
+  
+  .context-menu-item {
+    @apply w-full flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 
+           hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed rounded;
+  }
+  
+  .context-menu-divider {
+    @apply border-t border-gray-100 my-1;
+  }
+  
+  /* Drag Preview */
+  .drag-preview {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(0, 102, 204, 0.1);
+    border: 2px dashed #0066cc;
+    border-radius: 4px;
+    z-index: 1000;
+    opacity: 0.8;
+  }
+
+  /* Row Number Cell */
+  .row-number-cell {
+    background-color: #f0f0f0 !important;
+    text-align: center;
+    font-weight: 600;
+    color: #666;
+    border-right: 2px solid #ccc;
+    cursor: pointer !important;
+  }
+
+  /* Spreadsheet Header */
+  .spreadsheet-header {
+    background-color: #f0f0f0 !important;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 2px solid #ccc;
+    cursor: pointer !important;
+  }
+
+  /* Spreadsheet Cell */
+  .spreadsheet-cell {
+    font-size: 13px;
+    transition: background-color 0.1s ease;
+    cursor: cell !important;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* AG Grid Custom Styles - Dark Theme (for other parts of app) */
+.ag-theme-alpine-dark {
+  --ag-background-color: rgba(0, 0, 0, 0.2);
+  --ag-foreground-color: #ffffff;
+  --ag-border-color: rgba(255, 255, 255, 0.1);
+  --ag-header-background-color: rgba(0, 0, 0, 0.3);
+  --ag-header-foreground-color: #ffffff;
+  --ag-odd-row-background-color: rgba(255, 255, 255, 0.02);
+  --ag-even-row-background-color: transparent;
+  --ag-row-hover-color: rgba(59, 130, 246, 0.2);
+  --ag-selected-row-background-color: rgba(59, 130, 246, 0.3);
+  --ag-cell-focus-border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast {
+  @apply glass-panel p-4 mb-2 max-w-sm animate-fade-in;
+}
+
+.toast-success {
+  @apply border-l-4 border-l-green-500;
+}
+
+.toast-error {
+  @apply border-l-4 border-l-red-500;
+}
+
+.toast-info {
+  @apply border-l-4 border-l-blue-500;
+}
