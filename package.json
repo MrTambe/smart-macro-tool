@@ -2,15 +2,16 @@
   "name": "smart-macro-tool",
   "version": "1.0.0",
   "description": "Intelligent automation system for repetitive digital tasks",
-  "main": "src/frontend/dist/main.js",
+  "main": "src/frontend/electron/main.ts",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd src/frontend && npm run dev",
     "dev:backend": "cd src/backend && python -m uvicorn app.main:app --reload --port 8000",
+    "start": "cd src/frontend && npm run dev",
     "build": "cd src/frontend && npm run build",
-    "start": "cd src/frontend && npm start",
-    "dist": "cd src/frontend && npm run dist",
-    "setup": "npm install && cd src/frontend && npm install && cd ../backend && pip install -r requirements.txt"
+    "electron": "cd src/frontend && npm run electron:dev",
+    "electron:build": "cd src/frontend && npm run electron:build",
+    "setup": "cd src/frontend && npm install && cd ../backend && pip install -r requirements.txt"
   },
   "keywords": ["automation", "macro", "ai", "productivity"],
   "author": "Smart Macro Team",

@@ -8,6 +8,7 @@ import TopBar from './components/TopBar/TopBar'
 import StatusBar from './components/StatusBar/StatusBar'
 import SettingsMenu from './components/Settings/SettingsMenu'
 import WelcomeScreen from './components/WelcomeScreen/WelcomeScreen'
+import OnboardingOverlay from './components/Onboarding/OnboardingOverlay'
 import { useAppStore } from './hooks/useAppStore'
 import { useSettingsStore } from './store/settingsStore'
 import { useAIInitialization } from './hooks/useAIInitialization'
@@ -110,6 +111,7 @@ function App() {
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-dark-100 via-dark-200 to-dark-300 flex flex-col overflow-hidden">
+      <OnboardingOverlay />
       <TopBar onToggleSidebar={() => setShowFileExplorer(!showFileExplorer)} isSidebarVisible={showFileExplorer} />
       
       <div className="flex-1 overflow-hidden">
