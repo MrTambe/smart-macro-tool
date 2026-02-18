@@ -1,22 +1,47 @@
 @echo off
-chcp 65001 >nul 2>&1
-setlocal enabledelayedexpansion
+cd /d "%~dp0"
 
-set "PROJECT_DIR=%~dp0"
-cd /d "%PROJECT_DIR%"
-
-echo.
-echo ========================================
-echo     Smart Macro Tool - Starting...
-echo ========================================
+echo Starting Smart Macro Tool...
 echo.
 
-REM Check Node.js
-node --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [ERROR] Node.js not found!
-    echo Please install from: https://nodejs.org
-    pause
+REM Check if node_modules exists, if not install
+if not exist "node_modules" (
+    echo Installing root dependencies...
+    call npm install
+)
+
+if not exist "src\frontend\node_modules" (
+    echo Installing frontend dependencies...
+    cd src\frontend
+    call npm install --legacy-peer-deps
+    cd ..\..
+)
+
+REM Install uvicorn if needed
+python -c "import uvicorn" 2>nul
+if errorlevel 1 (
+    echo Installing backend dependencies...
+    pip install uvicorn fastapi
+)
+
+REM Start backend
+start "Backend - Smart Macro Tool" cmd /k "cd /d "%~dp0src\backend" && python -m uvicorn app.main:app --reload --port 8000"
+
+REM Wait for backend
+timeout /t 3 /nobreak >nul
+
+REM Start frontend
+start "Frontend - Smart Macro Tool" cmd /k "cd /d "%~dp0src\frontend" && npm run dev"
+
+REM Open browser
+timeout /t 5 /nobreak >nul
+start http://localhost:5173
+
+echo.
+echo App should be opening in your browser!
+echo If not, go to: http://localhost:5173
+echo.
+pause
     exit /b 1
 )
 echo [OK] Node.js found

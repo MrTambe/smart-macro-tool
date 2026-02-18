@@ -1,8 +1,8 @@
 {
   "name": "smart-macro-tool",
   "version": "1.0.0",
-  "description": "Intelligent automation system for repetitive digital tasks",
-  "main": "src/frontend/electron/main.ts",
+  "description": "AI-Powered Spreadsheet Automation Desktop Application",
+  "main": "src/frontend/dist-electron/main/main.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd src/frontend && npm run dev",
@@ -11,13 +11,16 @@
     "build": "cd src/frontend && npm run build",
     "electron": "cd src/frontend && npm run electron:dev",
     "electron:build": "cd src/frontend && npm run electron:build",
-    "setup": "cd src/frontend && npm install && cd ../backend && pip install -r requirements.txt"
+    "electron:start": "cd src/frontend && electron .",
+    "setup": "cd src/frontend && npm install --legacy-peer-deps && cd ../backend && pip install -r requirements.txt"
   },
   "keywords": [
     "automation",
     "macro",
     "ai",
-    "productivity"
+    "productivity",
+    "electron",
+    "desktop"
   ],
   "author": "Smart Macro Team",
   "license": "MIT",

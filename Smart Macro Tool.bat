@@ -1,37 +1,66 @@
 @echo off
 cd /d "%~dp0"
 
-echo Starting Smart Macro Tool...
+echo ============================================
+echo   Smart Macro Tool - Desktop App Launcher
+echo ============================================
 echo.
 
-REM Check if node_modules exists, if not install
+REM Check Node.js
+node --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] Node.js not found!
+    echo Please install from: https://nodejs.org
+    pause
+    exit /b 1
+)
+
+REM Check Python
+python --version >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] Python not found!
+    echo Please install from: https://python.org
+    pause
+    exit /b 1
+)
+
+echo [OK] Node.js and Python found
+
+REM Install dependencies if needed
 if not exist "node_modules" (
-    echo Installing dependencies...
+    echo [INFO] Installing root dependencies...
     call npm install
 )
 
 if not exist "src\frontend\node_modules" (
-    echo Installing frontend dependencies...
+    echo [INFO] Installing frontend dependencies...
     cd src\frontend
-    call npm install
+    call npm install --legacy-peer-deps
     cd ..\..
 )
 
-REM Start backend
-start "Backend - Smart Macro Tool" cmd /k "cd /d "%~dp0src\backend" &&vicorn app.main python -m u:app --reload --port 8000"
+REM Check if backend dependencies are installed
+python -c "import fastapi" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [INFO] Installing backend dependencies...
+    pip install fastapi uvicorn
+)
+
+echo.
+echo [INFO] Starting servers...
+echo.
+
+REM Start backend server in background
+start "Backend Server" cmd /k "cd /d "%~dp0src\backend" && python -m uvicorn app.main:app --reload --port 8000"
 
 REM Wait for backend
 timeout /t 3 /nobreak >nul
 
-REM Start frontend
-start "Frontend - Smart Macro Tool" cmd /k "cd /d "%~dp0src\frontend" && npm run dev"
-
-REM Open browser
-timeout /t 5 /nobreak >nul
-start http://localhost:5173
+REM Start frontend with Electron
+echo [INFO] Starting Desktop App...
+cd src\frontend
+npm run dev
 
 echo.
-echo App should be opening in your browser!
-echo If not, go to: http://localhost:5173
-echo.
+echo [ERROR] App closed. Check logs above.
 pause
