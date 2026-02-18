@@ -1,7 +1,7 @@
 # 🤖 Smart Macro Tool
 
 <p align="center">
-  <img src="assets/demo/samples/dashboard.png" alt="Smart Macro Tool Dashboard" width="100%"/>
+  <img src="assets/images/dashboard.png" alt="Smart Macro Tool Dashboard" width="100%"/>
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@ Then open: **http://localhost:5173**
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="assets/demo/samples/dashboard.png" alt="Dashboard" width="90%"/>
+  <img src="assets/images/dashboard.png" alt="Dashboard" width="90%"/>
   <br/><em>Main Dashboard</em>
 </p>
 
