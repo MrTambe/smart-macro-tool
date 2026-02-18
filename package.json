@@ -13,10 +13,15 @@
     "electron:build": "cd src/frontend && npm run electron:build",
     "setup": "cd src/frontend && npm install && cd ../backend && pip install -r requirements.txt"
   },
-  "keywords": ["automation", "macro", "ai", "productivity"],
+  "keywords": [
+    "automation",
+    "macro",
+    "ai",
+    "productivity"
+  ],
   "author": "Smart Macro Team",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.2"
   }
 }
