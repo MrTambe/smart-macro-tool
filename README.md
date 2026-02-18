@@ -1,11 +1,11 @@
-# Smart Macro Tool
+# 🤖 Smart Macro Tool
 
 <p align="center">
-  <img src="assets/images/logo.png" alt="Smart Macro Tool" width="150"/>
+  <img src="assets/demo/samples/dashboard.png" alt="Smart Macro Tool Dashboard" width="100%"/>
 </p>
 
 <p align="center">
-  <strong>🤖 AI-Powered Spreadsheet Automation</strong>
+  <strong>AI-Powered Spreadsheet Automation Desktop App</strong>
 </p>
 
 <p align="center">
@@ -18,115 +18,71 @@
   <a href="https://github.com/MrTambe/smart-macro-tool/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/MrTambe/smart-macro-tool?style=for-the-badge&color=green" alt="License"/>
   </a>
+  <a href="https://github.com/MrTambe/smart-macro-tool/releases">
+    <img src="https://img.shields.io/github/v/release/MrTambe/smart-macro-tool?color=purple" alt="Version"/>
+  </a>
 </p>
 
 ---
 
-## ✨ What is Smart Macro Tool?
+## ✨ Features
 
 <p align="center">
-  <img src="assets/images/dashboard.png" alt="Dashboard" width="90%"/>
+  <img src="https://img.shields.io/badge/🤖-AI%20Assistant-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/📊-Spreadsheets-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/⚡-Automation-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/🎯-Smart%20Suggestions-purple?style=for-the-badge" />
 </p>
-
-An **intelligent automation platform** that brings AI power to your spreadsheets. Just describe what you want in plain English, and AI helps you analyze, process, and automate your work.
-
-### 🔥 Key Features
 
 | Feature | Description |
 |---------|-------------|
-| 🤖 **AI Assistant** | Chat with AI to analyze data, generate insights, and automate tasks |
-| 📁 **File Management** | Open, save, and manage Excel, CSV files easily |
-| ⚡ **Automation** | Record and replay repetitive tasks as macros |
-| 🎯 **Smart Suggestions** | AI recommends improvements for your spreadsheets |
-| 🌐 **Multi-AI Support** | Works with Ollama (local), OpenRouter (cloud), LM Studio |
+| 🤖 **AI Assistant** | Chat with AI to analyze data, generate insights |
+| 📁 **File Management** | Open, save Excel, CSV, JSON files |
+| ⚡ **Macros** | Record and replay repetitive tasks |
+| 🌐 **Multi-AI** | Works with Ollama, OpenRouter, LM Studio |
+| 🖥️ **Desktop App** | Runs as native Windows/Mac/Linux app |
 
 ---
 
-## 🚀 Quick Start (3 Steps)
+## 🚀 Quick Start
 
-### Step 1: Install Dependencies
+### Download & Run
 
-**Windows:**
-```powershell
-# Double-click to run or paste in PowerShell/CMD:
-.\scripts\setup-windows.ps1
+```
+Double-click: Smart Macro Tool.bat
 ```
 
-**Manual Install:**
-```bash
-# Frontend
-cd src/frontend
-npm install
-
-# Backend  
-cd ../backend
-pip install -r requirements.txt
-```
-
----
-
-### Step 2: Start the Application
-
-**Option A: Desktop Shortcut (Recommended)**
-```
-Double-click: scripts\Smart Macro Tool.lnk
-```
-
-**Option B: Command Line**
+Or in terminal:
 ```bash
 npm run dev
 ```
 
-This opens:
-- 🌐 **Frontend:** http://localhost:5173
-- ⚙️ **Backend:** http://localhost:8000
-
----
-
-### Step 3: Use the App
-
-1. **Open Browser** → http://localhost:5173
-2. **Upload File** → Click folder icon → Select Excel/CSV
-3. **Ask AI** → Type in chat panel → Get instant help
-4. **Automate** → Record macros → Replay anytime
+Then open: **http://localhost:5173**
 
 ---
 
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="assets/images/dashboard.png" alt="Main Dashboard" width="90%"/>
+  <img src="assets/demo/samples/dashboard.png" alt="Dashboard" width="90%"/>
   <br/><em>Main Dashboard</em>
-</p>
-
-<p align="center">
-  <img src="assets/images/ai-review.png" alt="AI Review" width="90%"/>
-  <br/><em>AI Review & Approve</em>
 </p>
 
 ---
 
-## 🔧 First Run Setup
+## 🛠️ Tech Stack
 
-### AI Model Download (Automatic)
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&style=flat" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&style=flat" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&style=flat" />
+  <img src="https://img.shields.io/badge/Electron-47848F?logo=electron&style=flat" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&style=flat" />
+</p>
 
-On first launch, the app automatically downloads an AI model for offline use:
-
-```
-🤖 Downloading AI model...
-   ⬇️ llama3.2 (700MB)
-   ✓ Installing...
-   ✓ Ready!
-```
-
-**Manual Download (if needed):**
-```bash
-# Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Download model
-ollama pull llama3.2
-```
+- **Frontend:** React, TypeScript, Vite, Electron, Tailwind CSS, AG Grid
+- **Backend:** Python, FastAPI, Uvicorn
+- **AI:** OpenRouter, Ollama, LM Studio
 
 ---
 
@@ -135,30 +91,11 @@ ollama pull llama3.2
 ```
 smart-macro-tool/
 ├── src/
-│   ├── frontend/           # React + Electron + TypeScript
-│   │   ├── src/
-│   │   │   ├── components/   # UI Components
-│   │   │   ├── services/     # AI Services
-│   │   │   └── store/        # State Management
-│   │   └── package.json
-│   │
-│   ├── backend/           # FastAPI Python
-│   │   ├── app/
-│   │   │   ├── api/       # REST Endpoints
-│   │   │   ├── core/      # AI Prompts
-│   │   │   └── services/  # Business Logic
-│   │   └── requirements.txt
-│   │
-│   └── core/              # Clean Architecture
-│
-├── assets/
-│   └── demo/samples/      # Sample spreadsheets
-│
-├── scripts/
-│   ├── setup-windows.ps1  # Auto-setup
-│   └── Smart Macro Tool.lnk  # Desktop shortcut
-│
-└── README.md
+│   ├── frontend/          # React + Electron app
+│   ├── backend/          # FastAPI Python server
+│   └── core/             # Clean Architecture
+├── assets/demo/          # Sample files
+└── scripts/              # Setup scripts
 ```
 
 ---
@@ -169,23 +106,12 @@ smart-macro-tool/
 2. 🌿 Create branch: `git checkout -b feature/your-feature`
 3. 📝 Commit: `git commit -m 'feat: add feature'`
 4. 🚀 Push: `git push origin feature/your-feature`
-5. 🔃 PR: Open Pull Request
 
 ---
 
 ## 📄 License
 
 MIT License - See [LICENSE](LICENSE)
-
----
-
-## 🙏 Thanks To
-
-- [React](https://react.dev/) - UI Framework
-- [FastAPI](https://fastapi.tiangolo.com/) - Python Web Framework
-- [Electron](https://www.electronjs.org/) - Desktop App Framework
-- [AG Grid](https://www.ag-grid.com/) - Spreadsheet Component
-- [Ollama](https://ollama.com/) - Local AI
 
 ---
 
