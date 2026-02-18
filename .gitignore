@@ -296,3 +296,4 @@ data/cache/
 uploads/
 temp/
 tmp/
+package-lock.json
