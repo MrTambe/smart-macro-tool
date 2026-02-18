@@ -61,12 +61,6 @@ Then open: **http://localhost:5173**
 
 ---
 
-## 📸 Screenshots
-
-<p align="center">
-  <img src="assets/demo/samples/dashboard.png" alt="Dashboard" width="90%"/>
-  <br/><em>Main Dashboard</em>
-</p>
 
 ---
 
