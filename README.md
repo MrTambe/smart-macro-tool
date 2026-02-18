@@ -1,248 +1,194 @@
 # Smart Macro Tool
 
 <p align="center">
-  <img src="assets/images/logo.png" alt="Smart Macro Tool Logo" width="200"/>
+  <img src="assets/images/logo.png" alt="Smart Macro Tool" width="150"/>
 </p>
 
 <p align="center">
-  <strong>AI-Powered Spreadsheet Automation Platform</strong>
+  <strong>🤖 AI-Powered Spreadsheet Automation</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/yourusername/smart-macro-tool/stargazers">
-    <img src="https://img.shields.io/github/stars/yourusername/smart-macro-tool?style=for-the-badge&logo=github&color=yellow" alt="Stars"/>
+  <a href="https://github.com/MrTambe/smart-macro-tool/stargazers">
+    <img src="https://img.shields.io/github/stars/MrTambe/smart-macro-tool?style=for-the-badge&logo=github&color=yellow" alt="Stars"/>
   </a>
-  <a href="https://github.com/yourusername/smart-macro-tool/network/members">
-    <img src="https://img.shields.io/github/forks/yourusername/smart-macro-tool?style=for-the-badge&logo=github&color=blue" alt="Forks"/>
+  <a href="https://github.com/MrTambe/smart-macro-tool/network/members">
+    <img src="https://img.shields.io/github/forks/MrTambe/smart-macro-tool?style=for-the-badge&logo=github&color=blue" alt="Forks"/>
   </a>
-  <a href="https://github.com/yourusername/smart-macro-tool/issues">
-    <img src="https://img.shields.io/github/issues/yourusername/smart-macro-tool?style=for-the-badge&logo=github&color=red" alt="Issues"/>
-  </a>
-  <a href="https://github.com/yourusername/smart-macro-tool/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/yourusername/smart-macro-tool?style=for-the-badge&color=green" alt="License"/>
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://react.dev">
-    <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React"/>
-  </a>
-  <a href="https://www.typescriptlang.org">
-    <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript"/>
-  </a>
-  <a href="https://fastapi.tiangolo.com">
-    <img src="https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi&logoColor=white&style=flat-square" alt="FastAPI"/>
-  </a>
-  <a href="https://vitejs.dev">
-    <img src="https://img.shields.io/badge/Vite-5.0+-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite"/>
-  </a>
-  <a href="https://www.electronjs.org">
-    <img src="https://img.shields.io/badge/Electron-28.0+-47848F?logo=electron&logoColor=white&style=flat-square" alt="Electron"/>
+  <a href="https://github.com/MrTambe/smart-macro-tool/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/MrTambe/smart-macro-tool?style=for-the-badge&color=green" alt="License"/>
   </a>
 </p>
 
 ---
 
-## 🎯 Overview
+## ✨ What is Smart Macro Tool?
 
-**Smart Macro Tool** is an intelligent spreadsheet automation platform that combines the power of AI with traditional spreadsheet functionality. Built with Clean Architecture principles, it offers Excel-compatible formulas, AI-powered analysis, and professional-grade data processing capabilities.
+<p align="center">
+  <img src="assets/images/dashboard.png" alt="Dashboard" width="90%"/>
+</p>
 
-### ✨ Key Features
+An **intelligent automation platform** that brings AI power to your spreadsheets. Just describe what you want in plain English, and AI helps you analyze, process, and automate your work.
 
-- 🤖 **AI-Powered Analysis** - Intelligent suggestions with review & approve workflow
-- 📊 **Excel Compatibility** - Full support for Excel formulas (.xlsx, .xls)
-- 🔧 **Clean Architecture** - Modular, testable, and maintainable codebase
-- 🎨 **Modern UI** - Beautiful React-based interface with dark mode
-- ⚡ **High Performance** - FastAPI backend with WebSocket real-time updates
-- 🔄 **Multi-format Support** - Import/Export Excel, CSV, and JSON
-- 🌐 **Cross-platform** - Desktop app via Electron
-- 🔒 **Security First** - Input validation, safe AI operations
+### 🔥 Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🤖 **AI Assistant** | Chat with AI to analyze data, generate insights, and automate tasks |
+| 📁 **File Management** | Open, save, and manage Excel, CSV files easily |
+| ⚡ **Automation** | Record and replay repetitive tasks as macros |
+| 🎯 **Smart Suggestions** | AI recommends improvements for your spreadsheets |
+| 🌐 **Multi-AI Support** | Works with Ollama (local), OpenRouter (cloud), LM Studio |
+
+---
+
+## 🚀 Quick Start (3 Steps)
+
+### Step 1: Install Dependencies
+
+**Windows:**
+```powershell
+# Double-click to run or paste in PowerShell/CMD:
+.\scripts\setup-windows.ps1
+```
+
+**Manual Install:**
+```bash
+# Frontend
+cd src/frontend
+npm install
+
+# Backend  
+cd ../backend
+pip install -r requirements.txt
+```
+
+---
+
+### Step 2: Start the Application
+
+**Option A: Desktop Shortcut (Recommended)**
+```
+Double-click: scripts\Smart Macro Tool.lnk
+```
+
+**Option B: Command Line**
+```bash
+npm run dev
+```
+
+This opens:
+- 🌐 **Frontend:** http://localhost:5173
+- ⚙️ **Backend:** http://localhost:8000
+
+---
+
+### Step 3: Use the App
+
+1. **Open Browser** → http://localhost:5173
+2. **Upload File** → Click folder icon → Select Excel/CSV
+3. **Ask AI** → Type in chat panel → Get instant help
+4. **Automate** → Record macros → Replay anytime
 
 ---
 
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="assets/images/screenshot-dashboard.png" alt="Dashboard" width="80%"/>
-  <br/>
-  <em>Main Dashboard - Professional spreadsheet interface</em>
+  <img src="assets/images/dashboard.png" alt="Main Dashboard" width="90%"/>
+  <br/><em>Main Dashboard</em>
 </p>
 
 <p align="center">
-  <img src="assets/images/screenshot-ai-review.png" alt="AI Review" width="80%"/>
-  <br/>
-  <em>AI Review & Approve - Intelligent change suggestions</em>
-</p>
-
-<p align="center">
-  <img src="assets/images/screenshot-formulas.png" alt="Formulas" width="80%"/>
-  <br/>
-  <em>Excel-compatible formula engine</em>
+  <img src="assets/images/ai-review.png" alt="AI Review" width="90%"/>
+  <br/><em>AI Review & Approve</em>
 </p>
 
 ---
 
-## 🚀 Quick Start
+## 🔧 First Run Setup
 
-### Prerequisites
+### AI Model Download (Automatic)
 
-- **Node.js** 18+ and npm/yarn
-- **Python** 3.9+
-- **Git**
+On first launch, the app automatically downloads an AI model for offline use:
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/smart-macro-tool.git
-cd smart-macro-tool
-
-# Install frontend dependencies
-cd src/frontend
-npm install
-
-# Install backend dependencies
-cd ../backend
-pip install -r requirements.txt
-
-# Return to root
-cd ../..
+```
+🤖 Downloading AI model...
+   ⬇️ llama3.2 (700MB)
+   ✓ Installing...
+   ✓ Ready!
 ```
 
-### Development
-
+**Manual Download (if needed):**
 ```bash
-# Start both frontend and backend
-npm run dev
+# Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
 
-# Or start individually:
-npm run dev:frontend  # Vite dev server
-npm run dev:backend   # FastAPI server
-```
-
-### Production Build
-
-```bash
-# Build frontend
-npm run build
-
-# Build desktop app
-npm run electron:build
-
-# Build for distribution
-npm run dist
+# Download model
+ollama pull llama3.2
 ```
 
 ---
 
-## 🏗️ Architecture
-
-This project follows **Clean Architecture** principles with clear separation of concerns:
+## 📁 Project Structure
 
 ```
 smart-macro-tool/
-├── 📁 src/
-│   ├── 📁 frontend/          # React + TypeScript + Electron
-│   ├── 📁 backend/           # FastAPI + Python
-│   ├── 📁 core/              # Clean Architecture modules
-│   └── 📁 shared/            # Shared types & utilities
-├── 📁 tests/                 # Test suites
-├── 📁 docs/                  # Documentation
-├── 📁 assets/                # Static resources
-└── 📁 scripts/               # Build & utility scripts
-```
-
-### Tech Stack
-
-**Frontend:**
-- React 18 with TypeScript
-- Vite for blazing-fast builds
-- Electron for desktop app
-- Tailwind CSS for styling
-- AG Grid for spreadsheet functionality
-- Zustand for state management
-- ReactMarkdown for AI output formatting
-
-**Backend:**
-- FastAPI (Python)
-- Uvicorn ASGI server
-- Pandas for data processing
-- OpenPyXL for Excel support
-- WebSocket for real-time updates
-
-**AI Integration:**
-- Multiple AI provider support (OpenRouter, Ollama, LM Studio)
-- Structured AI responses with confidence scoring
-- Review & approve workflow for safety
-
----
-
-## 📖 Documentation
-
-- [Architecture Overview](docs/architecture/CLEAN_ARCHITECTURE_GUIDE.md)
-- [AI Review & Approve System](docs/architecture/AI_REVIEW_APPROVE_ARCHITECTURE.md)
-- [AI Skills & System Prompt](docs/architecture/AI_SYSTEM_PROMPT.md)
-- [Setup Guide](docs/SETUP.md)
-- [API Documentation](docs/api/README.md) *(coming soon)*
-
----
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run frontend tests
-npm run test:frontend
-
-# Run backend tests
-cd src/backend
-pytest
+├── src/
+│   ├── frontend/           # React + Electron + TypeScript
+│   │   ├── src/
+│   │   │   ├── components/   # UI Components
+│   │   │   ├── services/     # AI Services
+│   │   │   └── store/        # State Management
+│   │   └── package.json
+│   │
+│   ├── backend/           # FastAPI Python
+│   │   ├── app/
+│   │   │   ├── api/       # REST Endpoints
+│   │   │   ├── core/      # AI Prompts
+│   │   │   └── services/  # Business Logic
+│   │   └── requirements.txt
+│   │
+│   └── core/              # Clean Architecture
+│
+├── assets/
+│   └── demo/samples/      # Sample spreadsheets
+│
+├── scripts/
+│   ├── setup-windows.ps1  # Auto-setup
+│   └── Smart Macro Tool.lnk  # Desktop shortcut
+│
+└── README.md
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. 🍴 Fork the repo
+2. 🌿 Create branch: `git checkout -b feature/your-feature`
+3. 📝 Commit: `git commit -m 'feat: add feature'`
+4. 🚀 Push: `git push origin feature/your-feature`
+5. 🔃 PR: Open Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - See [LICENSE](LICENSE)
 
 ---
 
-## 🔒 Security
+## 🙏 Thanks To
 
-For security issues, please see our [Security Policy](SECURITY.md).
-
----
-
-## 🙏 Acknowledgments
-
-- [AG Grid](https://www.ag-grid.com/) - Professional spreadsheet component
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
-- [Electron](https://www.electronjs.org/) - Cross-platform desktop apps
-- [React](https://react.dev/) - UI library
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [React](https://react.dev/) - UI Framework
+- [FastAPI](https://fastapi.tiangolo.com/) - Python Web Framework
+- [Electron](https://www.electronjs.org/) - Desktop App Framework
+- [AG Grid](https://www.ag-grid.com/) - Spreadsheet Component
+- [Ollama](https://ollama.com/) - Local AI
 
 ---
 
 <p align="center">
-  Made with ❤️ by the Smart Macro Tool Team
-</p>
-
-<p align="center">
-  <a href="https://github.com/yourusername/smart-macro-tool">GitHub</a> •
-  <a href="https://github.com/yourusername/smart-macro-tool/issues">Issues</a> •
-  <a href="https://github.com/yourusername/smart-macro-tool/discussions">Discussions</a>
+  Made with ❤️ by <a href="https://github.com/MrTambe">MrTambe</a>
 </p>
