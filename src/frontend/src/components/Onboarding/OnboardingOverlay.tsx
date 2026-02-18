@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettingsStore } from '../store/settingsStore'
+import { useSettingsStore } from '../../store/settingsStore'
 import { X, ChevronRight, Download, Check, Terminal, FolderOpen, MessageSquare, Zap } from 'lucide-react'
 
 interface OnboardingStep {
