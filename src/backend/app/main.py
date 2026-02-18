@@ -59,30 +59,29 @@ app.include_router(macros.router, prefix="/api/macros", tags=["macros"])
 app.include_router(spreadsheet.router, prefix="/api/spreadsheet", tags=["spreadsheet"])
 app.include_router(ai_review.router, prefix="/api/ai-review", tags=["ai-review"])
 
-# Initialize AI review service
-change_repository = ChangeRepository()
-# Note: ai_service and spreadsheet_store should be injected from your existing services
-# This is a placeholder - integrate with your actual AI service
-ai_change_service = None  # Will be initialized with actual AI service
-change_applier = None  # Will be initialized with spreadsheet store
+# Initialize AI review service (disabled - uncomment when clean arch is ready)
+# change_repository = ChangeRepository()
+change_repository = None
+ai_change_service = None
+change_applier = None
 
-# Set up use case when services are available
-def initialize_ai_review_services(ai_service, spreadsheet_store):
-    """Initialize AI review services with actual dependencies."""
-    global ai_change_service, change_applier
-    ai_change_service = AIChangeSuggestionService(ai_service)
-    change_applier = SpreadsheetChangeApplier(spreadsheet_store)
-    
-    use_case = AIReviewUseCase(
-        ai_reviewer=ai_change_service,
-        change_applier=change_applier,
-        file_repository=spreadsheet_store,
-        change_repository=change_repository
-    )
-    
-    from app.api.ai_review import set_ai_review_use_case
-    set_ai_review_use_case(use_case)
-    logger.info("AI Review service initialized")
+# Set up use case when services are available (disabled)
+# def initialize_ai_review_services(ai_service, spreadsheet_store):
+#     """Initialize AI review services with actual dependencies."""
+#     global ai_change_service, change_applier
+#     ai_change_service = AIChangeSuggestionService(ai_service)
+#     change_applier = SpreadsheetChangeApplier(spreadsheet_store)
+#     
+#     use_case = AIReviewUseCase(
+#         ai_reviewer=ai_change_service,
+#         change_applier=change_applier,
+#         file_repository=spreadsheet_store,
+#         change_repository=change_repository
+#     )
+#     
+#     from app.api.ai_review import set_ai_review_use_case
+#     set_ai_review_use_case(use_case)
+#     logger.info("AI Review service initialized")
 
 @app.get("/")
 async def root():
