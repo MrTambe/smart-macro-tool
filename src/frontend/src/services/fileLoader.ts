@@ -53,7 +53,7 @@ export async function loadFileIntoWorkspace(
     // Parse file extension
     const ext = fileName.split('.').pop()?.toLowerCase() || '';
     
-    let sheetsData: any[] = [];
+    const sheetsData: any[] = [];
     let totalRows = 0;
     
     // Parse file based on type

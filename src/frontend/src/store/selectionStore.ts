@@ -248,7 +248,7 @@ export const useSelectionStore = create<SelectionState>((set, get) => ({
     if (!state.primaryRange) return
     
     const range = state.primaryRange
-    let newEnd = { ...range.end }
+    const newEnd = { ...range.end }
     
     switch (direction) {
       case 'up':

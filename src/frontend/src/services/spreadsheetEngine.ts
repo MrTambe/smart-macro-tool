@@ -6,54 +6,56 @@
 
 // Formula evaluation engine (ported from Node.js to browser)
 class FormulaEvaluator {
+  data: Record<string, any> = {};
+  functions: Record<string, (...args: any[]) => any> = {};
+
   constructor() {
-    this.data = {};
     this.functions = this.initializeFunctions();
   }
 
   initializeFunctions() {
     return {
       // Math functions
-      SUM: (...args) => {
+      SUM: (...args: any[]): number => {
         const flat = args.flat(Infinity);
-        return flat.reduce((acc, v) => acc + this.toNumber(v), 0);
+        return flat.reduce((acc: number, v: any) => acc + this.toNumber(v), 0);
       },
-      AVERAGE: (...args) => {
-        const flat = args.flat(Infinity).filter(v => v != null);
-        if (flat.length === 0) return '#DIV/0!';
-        return flat.reduce((acc, v) => acc + this.toNumber(v), 0) / flat.length;
+      AVERAGE: (...args: any[]): number => {
+        const flat = args.flat(Infinity).filter((v: any) => v != null);
+        if (flat.length === 0) return NaN;
+        return flat.reduce((acc: number, v: any) => acc + this.toNumber(v), 0) / flat.length;
       },
-      COUNT: (...args) => {
+      COUNT: (...args: any[]): number => {
         const flat = args.flat(Infinity);
-        return flat.filter(v => typeof v === 'number' || !isNaN(parseFloat(v))).length;
+        return flat.filter((v: any) => typeof v === 'number' || !isNaN(parseFloat(v))).length;
       },
-      COUNTA: (...args) => {
+      COUNTA: (...args: any[]): number => {
         const flat = args.flat(Infinity);
-        return flat.filter(v => v != null && v !== '').length;
+        return flat.filter((v: any) => v != null && v !== '').length;
       },
-      MAX: (...args) => {
-        const flat = args.flat(Infinity).map(v => this.toNumber(v));
+      MAX: (...args: any[]): number => {
+        const flat = args.flat(Infinity).map((v: any) => this.toNumber(v));
         return flat.length ? Math.max(...flat) : 0;
       },
-      MIN: (...args) => {
-        const flat = args.flat(Infinity).map(v => this.toNumber(v));
+      MIN: (...args: any[]): number => {
+        const flat = args.flat(Infinity).map((v: any) => this.toNumber(v));
         return flat.length ? Math.min(...flat) : 0;
       },
-      ABS: (v) => Math.abs(this.toNumber(v)),
-      ROUND: (v, d = 0) => {
+      ABS: (v: any): number => Math.abs(this.toNumber(v)),
+      ROUND: (v: any, d: number = 0): number => {
         const factor = Math.pow(10, d);
         return Math.round(this.toNumber(v) * factor) / factor;
       },
-      POWER: (b, e) => Math.pow(this.toNumber(b), this.toNumber(e)),
-      SQRT: (v) => Math.sqrt(this.toNumber(v)),
-      MOD: (a, b) => this.toNumber(a) % this.toNumber(b),
-      PRODUCT: (...args) => args.flat(Infinity).reduce((acc, v) => acc * this.toNumber(v), 1),
+      POWER: (b: any, e: any): number => Math.pow(this.toNumber(b), this.toNumber(e)),
+      SQRT: (v: any): number => Math.sqrt(this.toNumber(v)),
+      MOD: (a: any, b: any): number => this.toNumber(a) % this.toNumber(b),
+      PRODUCT: (...args: any[]): number => args.flat(Infinity).reduce((acc: number, v: any) => acc * this.toNumber(v), 1),
 
       // Logical functions
       IF: (cond, t, f) => cond ? t : f,
       AND: (...args) => args.every(Boolean),
       OR: (...args) => args.some(Boolean),
-      NOT: (v) => !Boolean(v),
+      NOT: (v) => !v,
       IFS: (...args) => {
         for (let i = 0; i < args.length; i += 2) {
           if (args[i]) return args[i + 1];
