@@ -39,9 +39,9 @@ class FilterCriteria(BaseModel):
     condition: str = Field(
         ...,
         pattern=("^(equals|notEquals|greaterThan|lessThan|"
-                  "greaterThanOrEqual|lessThanOrEqual|contains|"
-                  "notContains|startsWith|endsWith|empty|notEmpty|"
-                  "between|in)$")
+                 "greaterThanOrEqual|lessThanOrEqual|contains|"
+                 "notContains|startsWith|endsWith|empty|notEmpty|"
+                 "between|in)$")
     )
     value: Any
 

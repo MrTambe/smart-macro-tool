@@ -206,7 +206,7 @@ class MacroEngine:
             if is_rec and start else 0
         )
         return {
-            "is_recording": is_recording,
+            "is_recording": is_rec,
             "steps_recorded": len(self.current_recording),
             "start_time": start.isoformat() if start else None,
             "duration_seconds": duration
