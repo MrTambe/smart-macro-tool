@@ -3,28 +3,32 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import json
-import asyncio
 
 from app.services.ai_service import AIService
 
+
 router = APIRouter()
 ai_service = AIService()
+
 
 class ChatRequest(BaseModel):
     message: str
     context: Optional[List[dict]] = None
     current_file: Optional[dict] = None
 
+
 class ChatResponse(BaseModel):
     message: str
     actions: Optional[List[dict]] = None
     status: str = "completed"
+
 
 class ActionRequest(BaseModel):
     id: str
     type: str
     description: str
     payload: Optional[Dict[str, Any]] = None
+
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -39,6 +43,7 @@ async def chat(request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/execute")
 async def execute_action(request: ActionRequest):
     """Execute an AI action"""
@@ -48,9 +53,11 @@ async def execute_action(request: ActionRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/stream")
 async def stream_chat(request: ChatRequest):
     """Stream AI responses"""
+
     async def generate():
         try:
             async for chunk in ai_service.stream_chat(
@@ -60,11 +67,12 @@ async def stream_chat(request: ChatRequest):
                 yield f"data: {json.dumps(chunk)}\n\n"
         except Exception as e:
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
-    
+
     return StreamingResponse(
         generate(),
         media_type="text/event-stream"
     )
+
 
 @router.post("/analyze")
 async def analyze_data(data: dict):
@@ -74,6 +82,7 @@ async def analyze_data(data: dict):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/generate")
 async def generate_content(request: dict):
@@ -88,6 +97,7 @@ async def generate_content(request: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/models")
 async def list_models():
     """List available AI models"""
@@ -96,6 +106,7 @@ async def list_models():
         return {"models": models}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/format")
 async def format_content(request: dict):

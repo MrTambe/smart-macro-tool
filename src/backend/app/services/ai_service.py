@@ -1,5 +1,4 @@
 import json
-import os
 from typing import List, Dict, Any, AsyncGenerator, Optional
 import httpx
 import openai
@@ -7,39 +6,42 @@ from anthropic import Anthropic
 
 from app.core.config import settings
 
+
 class AIService:
     """AI service for handling LLM interactions"""
-    
+
     def __init__(self):
         self.provider = settings.AI_PROVIDER
         self.setup_clients()
-    
+
     def setup_clients(self):
         """Setup AI clients based on provider"""
         if self.provider == "openai" and settings.OPENAI_API_KEY:
             openai.api_key = settings.OPENAI_API_KEY
         elif self.provider == "anthropic" and settings.ANTHROPIC_API_KEY:
             self.anthropic_client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
-    
-    async def chat(self, message: str, context: Optional[List[dict]] = None, current_file: Optional[dict] = None) -> Dict[str, Any]:
+
+    async def chat(
+        self,
+        message: str,
+        context: Optional[List[dict]] = None,
+        current_file: Optional[dict] = None
+    ) -> Dict[str, Any]:
         """Process a chat message"""
         try:
-            # Build system prompt
             system_prompt = self._build_system_prompt(current_file)
-            
-            # Build messages
+
             messages = [{"role": "system", "content": system_prompt}]
-            
+
             if context:
                 for msg in context:
                     messages.append({
                         "role": msg.get("role", "user"),
                         "content": msg.get("content", "")
                     })
-            
+
             messages.append({"role": "user", "content": message})
-            
-            # Get response based on provider
+
             if self.provider == "ollama":
                 response = await self._chat_ollama(messages)
             elif self.provider == "openai":
@@ -48,11 +50,10 @@ class AIService:
                 response = await self._chat_anthropic(messages)
             else:
                 raise ValueError(f"Unknown AI provider: {self.provider}")
-            
-            # Parse response for actions
+
             parsed_response = self._parse_response(response)
             return parsed_response
-            
+
         except Exception as e:
             raise Exception(f"AI chat error: {str(e)}")
     
@@ -221,9 +222,12 @@ Would you like me to proceed?"""
         """Execute a macro action"""
         return {"success": True, "message": "Macro action executed"}
     
-    async def stream_chat(self, message: str, context: Optional[List[dict]] = None) -> AsyncGenerator[Dict[str, Any], None]:
+    async def stream_chat(
+        self,
+        message: str,
+        context: Optional[List[dict]] = None
+    ) -> AsyncGenerator[Dict[str, Any], None]:
         """Stream chat responses"""
-        # Placeholder for streaming implementation
         yield {"type": "token", "content": "Streaming not implemented yet"}
     
     async def analyze_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -260,7 +264,12 @@ Please provide:
             }
         }
     
-    async def generate_content(self, prompt: str, type: str = "text", context: Optional[Dict] = None) -> Dict[str, Any]:
+    async def generate_content(
+        self,
+        prompt: str,
+        type: str = "text",
+        context: Optional[Dict] = None
+    ) -> Dict[str, Any]:
         """Generate content using AI"""
         type_prompts = {
             "text": "Generate text content based on the following:",
@@ -268,14 +277,14 @@ Please provide:
             "improve": "Improve and polish the following content:",
             "expand": "Expand on the following content with more detail:"
         }
-        
+
         full_prompt = f"{type_prompts.get(type, type_prompts['text'])}\n\n{prompt}"
-        
+
         messages = [
             {"role": "system", "content": "You are a helpful content generation assistant."},
             {"role": "user", "content": full_prompt}
         ]
-        
+
         if self.provider == "ollama":
             response = await self._chat_ollama(messages)
         elif self.provider == "openai":
@@ -284,16 +293,16 @@ Please provide:
             response = await self._chat_anthropic(messages)
         else:
             response = "Content generation not available"
-        
+
         return {
             "content": response,
             "type": type
         }
-    
+
     async def format_content(self, content: str, format_type: str = "improve") -> Dict[str, Any]:
         """Format content using AI"""
         return await self.generate_content(content, type=format_type)
-    
+
     async def list_models(self) -> List[Dict[str, str]]:
         """List available AI models"""
         if self.provider == "ollama":
@@ -302,7 +311,7 @@ Please provide:
                     response = await client.get(f"{settings.OLLAMA_BASE_URL}/api/tags")
                     data = response.json()
                     return [{"id": m["name"], "name": m["name"]} for m in data.get("models", [])]
-            except:
+            except Exception:
                 return [{"id": settings.OLLAMA_MODEL, "name": settings.OLLAMA_MODEL}]
         elif self.provider == "openai":
             return [

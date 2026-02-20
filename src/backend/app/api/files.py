@@ -1,6 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
-from typing import List, Optional
+from typing import Optional
 import os
 import shutil
 from pathlib import Path
@@ -8,8 +7,10 @@ from pathlib import Path
 from app.core.config import settings
 from app.services.file_processor import FileProcessor
 
+
 router = APIRouter()
 file_processor = FileProcessor()
+
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -19,19 +20,19 @@ async def upload_file(file: UploadFile = File(...)):
         file.file.seek(0, 2)
         file_size = file.file.tell()
         file.file.seek(0)
-        
+
         if file_size > settings.MAX_FILE_SIZE:
             raise HTTPException(status_code=413, detail="File too large")
-        
+
         # Create upload directory if it doesn't exist
         upload_dir = Path(settings.UPLOAD_DIR)
         upload_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save file
         file_path = upload_dir / file.filename
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        
+
         return {
             "success": True,
             "filename": file.filename,
@@ -40,6 +41,7 @@ async def upload_file(file: UploadFile = File(...)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/process-document")
 async def process_document(file: UploadFile = File(...)):
@@ -51,6 +53,7 @@ async def process_document(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/process-spreadsheet")
 async def process_spreadsheet(file: UploadFile = File(...)):
     """Process a spreadsheet file (XLSX, CSV)"""
@@ -61,6 +64,7 @@ async def process_spreadsheet(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/export")
 async def export_file(data: dict):
     """Export data to a file"""
@@ -68,7 +72,7 @@ async def export_file(data: dict):
         file_type = data.get("type")
         filename = data.get("filename", "export")
         content = data.get("content")
-        
+
         if file_type == "xlsx":
             result = await file_processor.export_to_excel(content, filename)
         elif file_type == "csv":
@@ -77,10 +81,11 @@ async def export_file(data: dict):
             result = await file_processor.export_to_docx(content, filename)
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type")
-        
+
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/list")
 async def list_files(directory: Optional[str] = None):
@@ -88,7 +93,7 @@ async def list_files(directory: Optional[str] = None):
     try:
         if directory is None:
             directory = os.path.expanduser("~")
-        
+
         files = []
         for item in os.listdir(directory):
             item_path = os.path.join(directory, item)
@@ -100,10 +105,11 @@ async def list_files(directory: Optional[str] = None):
                 "size": os.path.getsize(item_path) if os.path.isfile(item_path) else None,
                 "modified": os.path.getmtime(item_path)
             })
-        
+
         return {"files": files, "directory": directory}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.delete("/delete/{filename}")
 async def delete_file(filename: str):

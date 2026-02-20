@@ -3,11 +3,10 @@ API endpoints for AI Review & Approve workflow.
 Simplified version without complex clean architecture dependencies.
 """
 
-from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime
 
 router = APIRouter(prefix="/api/ai-review", tags=["ai-review"])
 
@@ -49,7 +48,7 @@ async def request_changes(data: ChangeRequestCreate):
     Request AI to analyze file and suggest changes.
     """
     request_id = str(uuid.uuid4())
-    
+
     # Create a mock response for now
     # In production, this would call the AI service
     response = ChangeRequestResponse(
@@ -67,7 +66,7 @@ async def request_changes(data: ChangeRequestCreate):
         ],
         message="Request created. AI review requires AI provider configuration."
     )
-    
+
     change_requests[request_id] = response.dict()
     return response
 
@@ -77,7 +76,7 @@ async def approve_suggestion(data: ApproveRequest):
     """Approve a specific suggestion."""
     if data.request_id not in change_requests:
         raise HTTPException(status_code=404, detail="Request not found")
-    
+
     return {
         'request_id': data.request_id,
         'status': 'approved',
@@ -91,7 +90,7 @@ async def reject_request(data: Dict[str, str]):
     """Reject all suggestions in a request."""
     if data.get('request_id') not in change_requests:
         raise HTTPException(status_code=404, detail="Request not found")
-    
+
     return {
         'request_id': data['request_id'],
         'status': 'rejected',
@@ -104,7 +103,7 @@ async def apply_changes(data: ApplyChangesRequest):
     """Apply approved changes to file."""
     if data.request_id not in change_requests:
         raise HTTPException(status_code=404, detail="Request not found")
-    
+
     return {
         'success': True,
         'request_id': data.request_id,
@@ -117,7 +116,7 @@ async def preview_changes(data: PreviewRequest):
     """Preview changes without applying."""
     if data.request_id not in change_requests:
         raise HTTPException(status_code=404, detail="Request not found")
-    
+
     return {
         'request_id': data.request_id,
         'preview': 'Preview data here'
@@ -129,7 +128,7 @@ async def get_request_status(request_id: str):
     """Get status of a change request."""
     if request_id not in change_requests:
         raise HTTPException(status_code=404, detail="Request not found")
-    
+
     return change_requests[request_id]
 
 
@@ -147,5 +146,5 @@ async def ai_review_health():
     return {
         "status": "healthy",
         "service": "ai-review",
-        "clean_architecture": CLEAN_ARCH_AVAILABLE
+        "clean_architecture": False
     }
