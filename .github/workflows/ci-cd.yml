@@ -12,6 +12,10 @@ env:
   NODE_VERSION: '18'
   PYTHON_VERSION: '3.11'
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   # ============================================================================
   # Frontend Tests & Build
