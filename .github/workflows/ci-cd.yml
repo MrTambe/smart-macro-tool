@@ -189,6 +189,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [frontend, backend]
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -209,7 +211,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/.docsify
+        publish_dir: ./_docs
 
   # ============================================================================
   # Docker Build (Optional)
