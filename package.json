@@ -12,7 +12,11 @@
     "electron": "cd src/frontend && npm run electron:dev",
     "electron:build": "cd src/frontend && npm run electron:build",
     "electron:start": "cd src/frontend && electron .",
-    "setup": "cd src/frontend && npm install --legacy-peer-deps && cd ../backend && pip install -r requirements.txt"
+    "setup": "cd src/frontend && npm install --legacy-peer-deps && cd ../backend && pip install -r requirements.txt",
+    "test": "cd src/frontend && npm test",
+    "test:run": "cd src/frontend && npm run test:run",
+    "test:coverage": "cd src/frontend && npm run test:coverage",
+    "test:backend": "cd src/backend && python -m pytest"
   },
   "keywords": [
     "automation",

@@ -11,6 +11,12 @@ export default defineConfig({
   optimizeDeps: {
     include: ['xlsx', 'ag-grid-react', 'ag-grid-community'],
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+  },
   plugins: [
     react(),
     electron([
