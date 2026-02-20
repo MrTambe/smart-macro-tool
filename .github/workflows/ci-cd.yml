@@ -199,17 +199,17 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install dependencies
-      run: npm install -g @docsify/cli
+    - name: Install docsify CLI
+      run: npm install -g docsify-cli
 
-    - name: Build documentation
-      run: docsify serve docs --port 3000 &
+    - name: Generate static files
+      run: docsify build docs
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs
+        publish_dir: ./docs/.docsify
 
   # ============================================================================
   # Docker Build (Optional)
