@@ -242,31 +242,50 @@ const ChatPanel: React.FC = () => {
     const activeFile = spreadsheetStore.getActiveFile()
     const activeSheet = spreadsheetStore.getActiveSheet()
     
-    if (!activeFile || !activeSheet) return
+    console.log('[AI Action] Executing:', action)
+    console.log('[AI Action] Active file:', activeFile?.name, 'Active sheet:', activeSheet?.name)
+    
+    if (!activeFile || !activeSheet) {
+      console.warn('[AI Action] No active file or sheet!')
+      return
+    }
 
     setIsProcessing(true)
     try {
+      const payload = action.payload || {}
+      
       switch (action.type) {
         case 'edit':
-          if (action.payload.cellId && action.payload.value !== undefined) {
-            spreadsheetStore.setCellValue(activeFile.id, activeSheet.id, action.payload.cellId, action.payload.value)
-          } else if (action.payload.cellIds && action.description?.toLowerCase().includes('merge')) {
-            spreadsheetStore.mergeCells(activeFile.id, activeSheet.id, action.payload.cellIds)
+          if (payload.cellId) {
+            const value = payload.value ?? ''
+            console.log('[AI Action] Setting cell:', payload.cellId, '=', value)
+            spreadsheetStore.setCellValue(activeFile.id, activeSheet.id, payload.cellId, value)
+          } else if (payload.cellIds && Array.isArray(payload.cellIds)) {
+            if (action.description?.toLowerCase().includes('merge')) {
+              spreadsheetStore.mergeCells(activeFile.id, activeSheet.id, payload.cellIds)
+            } else {
+              // Handle multiple cell operations
+              for (const cellId of payload.cellIds) {
+                spreadsheetStore.setCellValue(activeFile.id, activeSheet.id, cellId, payload.value ?? '')
+              }
+            }
           }
           break
+          
         case 'format':
-          if (action.payload.cellId && action.payload.style) {
-            spreadsheetStore.setCellStyle(activeFile.id, activeSheet.id, action.payload.cellId, action.payload.style)
-          } else if (action.payload.style) {
-            spreadsheetStore.applyStyleToSelection(action.payload.style)
+          if (payload.cellId && payload.style) {
+            spreadsheetStore.setCellStyle(activeFile.id, activeSheet.id, payload.cellId, payload.style)
+          } else if (payload.style) {
+            spreadsheetStore.applyStyleToSelection(payload.style)
           }
           break
+          
         default:
-          console.warn('Unsupported action type:', action.type)
+          console.warn('[AI Action] Unsupported action type:', action.type)
       }
       spreadsheetStore.markFileModified(activeFile.id, true)
     } catch (error) {
-      console.error('Action execution error:', error)
+      console.error('[AI Action] Action execution error:', error)
     } finally {
       setIsProcessing(false)
     }
