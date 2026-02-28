@@ -29,6 +29,7 @@
   "author": "Smart Macro Team",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "docsify-cli": "^4.4.4"
   }
 }
